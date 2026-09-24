@@ -10,4 +10,8 @@ class UserResponseSchema(BaseModel):
     name: str
     username: str
     email: str
-    id: int    
+    id: int
+
+class LoginSchema(BaseModel):
+    username: str
+    password: str
