@@ -1,4 +1,4 @@
-from fastapi import HTTPException, status
+from fastapi import HTTPException, status, Request
 from src.user.dtos import UserSchema, LoginSchema
 from sqlalchemy.orm import Session
 from src.user.models import UserModel
@@ -50,3 +50,24 @@ def login_user(body: LoginSchema, db: Session):
         
     token = jwt.encode({"_id":user.id, "exp":exp_time}, settings.SECRET_KEY, settings.ALGORITHM)
     return {"Token":token}
+
+##Token send
+def is_authenticated(request:Request , db:Session):
+    token = request.headers.get("authorization")
+    if not token:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail = "You are unauthorized to login")
+
+    token = token.split(" ")[-1]
+
+    data = jwt.decode(token, settings.SECRET_KEY, settings.ALGORITHM)
+    user_id = data.get("_id")
+    exp_time = data.get("exp")
+
+    current_time = datetime.now().timestamp()
+    if current_time > exp_time :
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail = "You are unauthorized to login")
+    user = db.query(UserModel).filter(UserModel.id == user_id).first()
+    if not user :
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail = "You are unauthorized to login")
+    
+    return user
