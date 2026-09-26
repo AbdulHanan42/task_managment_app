@@ -5,6 +5,7 @@ from src.user.models import UserModel
 from pwdlib import PasswordHash
 from datetime import datetime , timedelta
 import jwt
+from jwt.exceptions import InvalidTokenError
 from src.utils.settings import settings
 
 password_hash = PasswordHash.recommended()
@@ -52,22 +53,26 @@ def login_user(body: LoginSchema, db: Session):
     return {"Token":token}
 
 ##Token send
-def is_authenticated(request:Request , db:Session):
-    token = request.headers.get("authorization")
-    if not token:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail = "You are unauthorized to login")
 
-    token = token.split(" ")[-1]
+def is_authenticated(request: Request, db: Session):
+    try:
+        token = request.headers.get("authorization")
+        if not token:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="You are unauthorized to login")
 
-    data = jwt.decode(token, settings.SECRET_KEY, settings.ALGORITHM)
-    user_id = data.get("_id")
-    exp_time = data.get("exp")
+        token_parts = token.split(" ")
+        if len(token_parts) != 2 or token_parts[0].lower() != "bearer":
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token format")
 
-    current_time = datetime.now().timestamp()
-    if current_time > exp_time :
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail = "You are unauthorized to login")
-    user = db.query(UserModel).filter(UserModel.id == user_id).first()
-    if not user :
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail = "You are unauthorized to login")
-    
-    return user
+        token = token_parts[-1]
+        data = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+        user_id = data.get("_id")
+
+        user = db.query(UserModel).filter(UserModel.id == user_id).first()
+        if not user:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="You are unauthorized to login")
+
+        return user
+
+    except InvalidTokenError:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="You are unauthorized to login")
