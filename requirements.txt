@@ -1,1 +1,5 @@
 psycopg2-binary
+
+##for run the migration changes run these two commands
+## alembic revision --autogenerate -m "add user_id to task"
+## alembic upgrade head
