@@ -6,6 +6,7 @@ from pwdlib import PasswordHash
 from datetime import datetime , timedelta
 import jwt
 from jwt.exceptions import InvalidTokenError
+from src.utils.mail import send_email
 from src.utils.settings import settings
 
 password_hash = PasswordHash.recommended()
@@ -16,7 +17,7 @@ def get_password_hash(password):
 def verify_password(plain_password, hashed_password):
     return password_hash.verify(plain_password, hashed_password)
 
-def register(body: UserSchema, db: Session):
+async def register(body: UserSchema, db: Session):
     is_user = db.query(UserModel).filter(UserModel.username == body.username).first()
     if is_user:
         raise HTTPException(400, detail="Username already exists")
@@ -36,7 +37,10 @@ def register(body: UserSchema, db: Session):
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
-    
+
+    ##Send email Confirmation 
+    res = await send_email([new_user.email])
+    print (res)
     return new_user
 
 def login_user(body: LoginSchema, db: Session):
