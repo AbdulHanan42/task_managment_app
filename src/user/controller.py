@@ -1,5 +1,5 @@
 from fastapi import HTTPException, status, Request, BackgroundTasks
-from src.user.dtos import UserSchema, LoginSchema
+from src.user.dtos import UserSchema, LoginSchema, UserUpdateSchema
 from sqlalchemy.orm import Session
 from src.user.models import UserModel
 from pwdlib import PasswordHash
@@ -16,6 +16,28 @@ def get_password_hash(password):
 
 def verify_password(plain_password, hashed_password):
     return password_hash.verify(plain_password, hashed_password)
+
+
+def update_profile(body: UserUpdateSchema, db: Session, user: UserModel):
+    values = body.model_dump(exclude_unset=True)
+    for field in ("username", "email"):
+        value = values.get(field)
+        if value is None:
+            continue
+        existing_user = db.query(UserModel).filter(getattr(UserModel, field) == value).first()
+        if existing_user and existing_user.id != user.id:
+            label = "Username" if field == "username" else "Email"
+            raise HTTPException(status_code=400, detail=f"{label} already exists")
+
+    for field, value in values.items():
+        if value is not None:
+            setattr(user, field, value)
+
+    if values:
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+    return user
 
 async def register(body: UserSchema, bg_task:BackgroundTasks, db: Session):
     is_user = db.query(UserModel).filter(UserModel.username == body.username).first()
