@@ -1,4 +1,5 @@
 .env
+/.env.smtp
 env/
 __pycache__/
 *.py[cod]
