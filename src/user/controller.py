@@ -1,4 +1,4 @@
-from fastapi import HTTPException, status, Request
+from fastapi import HTTPException, status, Request, BackgroundTasks
 from src.user.dtos import UserSchema, LoginSchema
 from sqlalchemy.orm import Session
 from src.user.models import UserModel
@@ -17,7 +17,7 @@ def get_password_hash(password):
 def verify_password(plain_password, hashed_password):
     return password_hash.verify(plain_password, hashed_password)
 
-async def register(body: UserSchema, db: Session):
+async def register(body: UserSchema, bg_task:BackgroundTasks, db: Session):
     is_user = db.query(UserModel).filter(UserModel.username == body.username).first()
     if is_user:
         raise HTTPException(400, detail="Username already exists")
@@ -39,8 +39,8 @@ async def register(body: UserSchema, db: Session):
     db.refresh(new_user)
 
     ##Send email Confirmation 
-    res = await send_email([new_user.email])
-    print (res)
+    bg_task.add_task(send_email, [new_user.email])
+    
     return new_user
 
 def login_user(body: LoginSchema, db: Session):
