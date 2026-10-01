@@ -4,6 +4,7 @@ import { ArrowLeft, Check, Pencil, Trash2 } from 'lucide-vue-next'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import AppButton from '../../components/common/AppButton.vue'
 import AppConfirmDialog from '../../components/common/AppConfirmDialog.vue'
+import TaskPriorityBadge from '../../components/tasks/TaskPriorityBadge.vue'
 import TaskStatusBadge from '../../components/tasks/TaskStatusBadge.vue'
 import { useTasks } from '../../composables/useTasks'
 import { useToast } from '../../composables/useToast'
@@ -29,6 +30,7 @@ async function toggle() {
       title: task.value.title,
       description: task.value.description,
       is_completed: !task.value.is_completed,
+      priority: task.value.priority,
     })
     toast.success(
       task.value.is_completed ? 'Task marked complete.' : 'Task moved back to in progress.',
@@ -59,8 +61,11 @@ async function remove() {
     <div v-if="tasksStore.loading && !task" class="detail-panel skeleton"></div>
     <section v-else-if="task" class="detail-panel">
       <div class="detail-topline">
-        <span class="eyebrow">TASK-{{ String(task.id).padStart(3, '0') }}</span
-        ><TaskStatusBadge :completed="task.is_completed" />
+        <span class="eyebrow">TASK-{{ String(task.id).padStart(3, '0') }}</span>
+        <div class="detail-badges">
+          <TaskPriorityBadge :priority="task.priority" />
+          <TaskStatusBadge :completed="task.is_completed" />
+        </div>
       </div>
       <h1 class="font-display detail-title">{{ task.title }}</h1>
       <p class="detail-description">{{ task.description }}</p>

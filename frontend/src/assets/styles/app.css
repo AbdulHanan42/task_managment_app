@@ -612,6 +612,31 @@ button {
   background: currentColor;
   border-radius: 50%;
 }
+.priority-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 8px;
+  border-radius: 4px;
+  font-size: 9px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.priority-badge--most_important {
+  color: #a74738;
+  background: #fbe9e4;
+}
+.priority-badge--important {
+  color: #98611b;
+  background: #f7efdc;
+}
+.priority-badge--normal {
+  color: #466a51;
+  background: #eaf1e6;
+}
+.priority-badge--regular {
+  color: #647268;
+  background: #eef1ed;
+}
 
 .view-heading {
   display: flex;
@@ -837,6 +862,7 @@ button {
 }
 .task-card-meta {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 11px;
 }
@@ -959,7 +985,8 @@ button {
   color: #435148;
 }
 .field input,
-.field textarea {
+.field textarea,
+.field select {
   width: 100%;
   min-height: 43px;
   padding: 10px 12px;
@@ -984,12 +1011,14 @@ button {
   color: #a5aea6;
 }
 .field input:focus,
-.field textarea:focus {
+.field textarea:focus,
+.field select:focus {
   border-color: #86a58a;
   box-shadow: 0 0 0 3px rgb(101 146 106 / 12%);
 }
 .field input[aria-invalid='true'],
-.field textarea[aria-invalid='true'] {
+.field textarea[aria-invalid='true'],
+.field select[aria-invalid='true'] {
   border-color: #d58271;
 }
 .field-error {
@@ -1069,6 +1098,13 @@ button {
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+.detail-badges {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 7px;
 }
 .detail-title {
   margin: 21px 0 12px;

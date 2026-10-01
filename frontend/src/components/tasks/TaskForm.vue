@@ -1,6 +1,7 @@
 <script setup>
 import { reactive, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import { TASK_PRIORITIES } from '../../utils/constants'
 import { validateTask } from '../../utils/validators'
 import AppButton from '../common/AppButton.vue'
 import AppInput from '../common/AppInput.vue'
@@ -13,7 +14,7 @@ const props = defineProps({
 })
 const emit = defineEmits(['submit'])
 const router = useRouter()
-const form = reactive({ title: '', description: '', is_completed: false })
+const form = reactive({ title: '', description: '', is_completed: false, priority: 'regular' })
 const errors = reactive({})
 
 watch(
@@ -22,6 +23,7 @@ watch(
     form.title = task?.title || ''
     form.description = task?.description || ''
     form.is_completed = task?.is_completed || false
+    form.priority = task?.priority || 'regular'
   },
   { immediate: true },
 )
@@ -34,6 +36,7 @@ function submit() {
     title: form.title.trim(),
     description: form.description.trim(),
     is_completed: form.is_completed,
+    priority: form.priority,
   })
 }
 </script>
@@ -55,6 +58,24 @@ function submit() {
       :error="errors.description || backendErrors.description"
       multiline
     />
+    <label class="field" for="priority">
+      <span class="field-label">Task priority</span>
+      <select
+        id="priority"
+        v-model="form.priority"
+        name="priority"
+        :aria-invalid="Boolean(backendErrors.priority)"
+        :aria-describedby="backendErrors.priority ? 'priority-error' : undefined"
+        required
+      >
+        <option v-for="option in TASK_PRIORITIES" :key="option.value" :value="option.value">
+          {{ option.label }}
+        </option>
+      </select>
+      <span v-if="backendErrors.priority" id="priority-error" class="field-error">
+        {{ backendErrors.priority }}
+      </span>
+    </label>
     <label class="checkbox-row"
       ><input v-model="form.is_completed" type="checkbox" /><span class="checkbox-visual"></span
       ><span
