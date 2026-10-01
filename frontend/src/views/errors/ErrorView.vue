@@ -4,14 +4,12 @@ import { ArrowLeft, House } from 'lucide-vue-next'
 import { RouterLink } from 'vue-router'
 
 const props = defineProps({ code: { type: String, default: '404' } })
-const copy = computed(
-  () =>
-    ({
-      401: ['Sign in required', 'This page needs an authenticated session.'],
-      403: ['Access denied', 'Your account does not have access to this page.'],
-      404: ['Page not found', 'This page has wandered outside your workspace.'],
-    })[props.code] || ['Something went wrong', 'Return to your workspace and try again.'],
-)
+const messages = {
+  401: ['Sign in required', 'This page needs an authenticated session.'],
+  403: ['Access denied', 'Your account does not have access to this page.'],
+  404: ['Page not found', 'This page has wandered outside your workspace.'],
+}
+const copy = computed(() => messages[props.code] || ['Something went wrong', 'Return to your workspace and try again.'])
 </script>
 
 <template>
