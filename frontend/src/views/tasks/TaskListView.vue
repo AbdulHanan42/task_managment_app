@@ -39,6 +39,7 @@ async function toggleTask(task) {
       title: task.title,
       description: task.description,
       is_completed: !task.is_completed,
+      priority: task.priority,
     })
     toast.success(!task.is_completed ? 'Task marked complete.' : 'Task moved back to in progress.')
   } catch (error) {

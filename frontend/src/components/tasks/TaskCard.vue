@@ -1,6 +1,7 @@
 <script setup>
 import { ArrowUpRight, Check, MoreHorizontal } from 'lucide-vue-next'
 import { RouterLink } from 'vue-router'
+import TaskPriorityBadge from './TaskPriorityBadge.vue'
 import TaskStatusBadge from './TaskStatusBadge.vue'
 
 defineProps({ task: { type: Object, required: true } })
@@ -23,6 +24,7 @@ defineEmits(['toggle', 'delete'])
       }}</RouterLink>
       <p class="task-card-description">{{ task.description }}</p>
       <div class="task-card-meta">
+        <TaskPriorityBadge :priority="task.priority" />
         <TaskStatusBadge :completed="task.is_completed" /><span class="task-id"
           >TASK-{{ String(task.id).padStart(3, '0') }}</span
         >
