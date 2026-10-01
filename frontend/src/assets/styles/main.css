@@ -1,0 +1,75 @@
+@import 'tailwindcss';
+@import './app.css';
+
+@theme {
+  --font-sans: 'DM Sans', sans-serif;
+  --font-display: 'Space Grotesk', sans-serif;
+  --color-ink: #202925;
+  --color-moss: #3f6c57;
+  --color-leaf: #dce9db;
+  --color-coral: #e17a63;
+  --color-paper: #f5f6f2;
+  --color-line: #e3e7df;
+}
+
+:root {
+  font-family: 'DM Sans', sans-serif;
+  color: #202925;
+  background: #f5f6f2;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-optical-sizing: auto;
+}
+
+* {
+  box-sizing: border-box;
+}
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+}
+button,
+input,
+textarea {
+  font: inherit;
+}
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid #e7a48e;
+  outline-offset: 2px;
+}
+.font-display {
+  font-family: 'Space Grotesk', sans-serif;
+}
+.page-enter {
+  animation: page-enter 280ms ease-out both;
+}
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
