@@ -11,6 +11,9 @@
   --soft-line: #edf0e9;
   --danger: #b74b3b;
   --shadow: 0 14px 38px rgb(30 48 38 / 7%);
+  --glass-surface: rgb(255 255 255 / 72%);
+  --glass-border: rgb(255 255 255 / 82%);
+  --glass-shadow: 0 12px 32px rgb(30 48 38 / 6%);
 }
 
 #app {
@@ -166,6 +169,10 @@ button {
 .main-column {
   min-height: 100vh;
   margin-left: 252px;
+  background-color: var(--paper);
+  background-image:
+    radial-gradient(ellipse at 84% 7%, rgb(225 122 99 / 8%), transparent 34rem),
+    radial-gradient(ellipse at 8% 28%, rgb(92 139 103 / 10%), transparent 38rem);
 }
 .topbar {
   position: sticky;
@@ -176,9 +183,10 @@ button {
   align-items: center;
   justify-content: space-between;
   padding: 0 clamp(24px, 5vw, 70px);
-  background: rgb(245 246 242 / 94%);
+  background: rgb(245 246 242 / 76%);
   border-bottom: 1px solid var(--line);
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(18px) saturate(125%);
+  -webkit-backdrop-filter: blur(18px) saturate(125%);
 }
 .topbar-title {
   color: var(--ink);
@@ -441,9 +449,12 @@ button {
   min-height: 158px;
   flex-direction: column;
   padding: 19px 20px 17px;
-  background: var(--white);
-  border: 1px solid var(--soft-line);
+  background: var(--glass-surface);
+  border: 1px solid var(--glass-border);
   border-radius: 7px;
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(16px) saturate(120%);
+  -webkit-backdrop-filter: blur(16px) saturate(120%);
 }
 .stat-icon {
   display: grid;
@@ -543,9 +554,12 @@ button {
 }
 .recent-list {
   overflow: hidden;
-  background: white;
-  border: 1px solid var(--line);
+  background: var(--glass-surface);
+  border: 1px solid var(--glass-border);
   border-radius: 7px;
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(16px) saturate(120%);
+  -webkit-backdrop-filter: blur(16px) saturate(120%);
 }
 .recent-row {
   display: grid;
@@ -791,9 +805,12 @@ button {
   min-height: 162px;
   gap: 13px;
   padding: 17px;
-  background: white;
-  border: 1px solid var(--line);
+  background: var(--glass-surface);
+  border: 1px solid var(--glass-border);
   border-radius: 7px;
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(16px) saturate(120%);
+  -webkit-backdrop-filter: blur(16px) saturate(120%);
   transition:
     border-color 150ms ease,
     box-shadow 150ms ease,
@@ -1375,6 +1392,53 @@ button {
 .auth-form .field input {
   min-height: 41px;
   background: #fbfcfa;
+}
+.register-password-field {
+  display: grid;
+  gap: 7px;
+}
+.password-strength {
+  display: grid;
+  gap: 5px;
+}
+.password-strength__meter {
+  display: grid;
+  height: 4px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 4px;
+}
+.password-strength__segment {
+  background: #e5e9e3;
+  border-radius: 99px;
+  transition: background 160ms ease;
+}
+.password-strength__meter--weak .password-strength__segment--filled {
+  background: #d77763;
+}
+.password-strength__meter--fair .password-strength__segment--filled {
+  background: #d5a14e;
+}
+.password-strength__meter--good .password-strength__segment--filled {
+  background: #8a9b5d;
+}
+.password-strength__meter--strong .password-strength__segment--filled {
+  background: #4f805b;
+}
+.password-strength__meta {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  color: #89938b;
+  font-size: 9px;
+  font-weight: 400;
+  line-height: 1.45;
+}
+.password-strength__meta strong {
+  flex: 0 0 auto;
+  color: #566a5a;
+  font-size: 9px;
+  font-weight: 700;
 }
 .auth-submit {
   width: 100%;
