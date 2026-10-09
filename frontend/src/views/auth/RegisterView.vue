@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, ref } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import { ArrowRight, CheckSquare } from 'lucide-vue-next'
 import { RouterLink, useRouter } from 'vue-router'
 import AppButton from '../../components/common/AppButton.vue'
@@ -14,6 +14,20 @@ const toast = useToast()
 const form = reactive({ name: '', username: '', email: '', password: '' })
 const errors = ref({})
 const message = ref('')
+const passwordStrength = computed(() => {
+  const password = form.password
+  const score = [
+    password.length >= 8,
+    /[A-Za-z]/.test(password),
+    /\d/.test(password),
+    /[^A-Za-z0-9]/.test(password),
+  ].filter(Boolean).length
+
+  return {
+    score,
+    label: ['', 'Weak', 'Fair', 'Good', 'Strong'][score],
+  }
+})
 
 async function submit() {
   errors.value = validateCredentials(form, true)
@@ -62,15 +76,45 @@ async function submit() {
           placeholder="you@example.com"
           autocomplete="email"
           :error="errors.email"
-        /><AppInput
-          v-model="form.password"
-          name="password"
-          label="Password"
-          type="password"
-          placeholder="Create a password"
-          autocomplete="new-password"
-          :error="errors.password"
         />
+        <div class="register-password-field">
+          <AppInput
+            v-model="form.password"
+            name="password"
+            label="Password"
+            type="password"
+            placeholder="Create a password"
+            autocomplete="new-password"
+            :error="errors.password"
+          />
+          <div class="password-strength">
+            <div
+              class="password-strength__meter"
+              :class="
+                passwordStrength.score
+                  ? `password-strength__meter--${passwordStrength.label.toLowerCase()}`
+                  : ''
+              "
+              role="meter"
+              aria-label="Password strength"
+              aria-valuemin="0"
+              aria-valuemax="4"
+              :aria-valuenow="passwordStrength.score"
+              :aria-valuetext="passwordStrength.label || 'No password entered'"
+            >
+              <span
+                v-for="segment in 4"
+                :key="segment"
+                class="password-strength__segment"
+                :class="{ 'password-strength__segment--filled': passwordStrength.score >= segment }"
+              />
+            </div>
+            <div class="password-strength__meta">
+              <span>Use 8 or more characters with a mix of letters, numbers &amp; symbols.</span>
+              <strong v-if="passwordStrength.label">{{ passwordStrength.label }}</strong>
+            </div>
+          </div>
+        </div>
         <div v-if="message" class="form-alert" role="alert">{{ message }}</div>
         <AppButton type="submit" class="auth-submit" :loading="auth.loading"
           >Create account <ArrowRight :size="17"
